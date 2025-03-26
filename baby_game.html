@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby Shower Animal Quiz</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            background-color: #f0e6ff; 
+            color: #333; 
+            padding: 18px;
+        }
+        .quiz-container { 
+            max-width: 600px; 
+            margin: auto; 
+            text-align: left; 
+            background: white; 
+            padding: 15px; 
+            border-radius: 10px; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .question {
+	    display: flex;
+            align-items: left;
+            margin: 15px 0; 
+            padding: 10px; 
+            border-radius: 10px; 
+            font-size: 20px;
+            background-color: #fdedff; 
+            color: #333; 
+        }
+
+	.question-content {
+            flex: 1;
+            display: flex;
+            align-items: left;
+        }
+	
+        .question label { 
+            display: inline-block; 
+            margin-right: 20px; 
+            font-size: 16px; 
+            color: #333;
+        }
+        .emoji { 
+            font-size: 30px; 
+            font-weight: bold; 
+        }
+        button { 
+            margin-top: 20px; 
+            padding: 10px; 
+            font-size: 18px; 
+            display: block; 
+            width: 100%; 
+            background-color: #a366ff; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
+        }
+        .incorrect { 
+            background-color: #c82300; 
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h2>Baby Shower Game: Match the Animal to Its Gestation Period</h2>
+        <p>Choose the correct gestation period for each animal!</p>
+        <form id="quizForm"></form>
+        <button type="button" onclick="checkAnswers()">Submit</button>
+        <h3 id="result"></h3>
+    </div>
+    <script>
+        const questions = [
+            { emoji: "🐘", animal: "Elephant", answers: ["465 days", "16 months", "9 months"], correct: "465 days" },
+            { emoji: "🐶", animal: "Dog", answers: ["58-68 days", "30 days", "42 days"], correct: "58-68 days" },
+            { emoji: "🐱", animal: "Cat", answers: ["58-68 days", "42 days", "30 days"], correct: "58-68 days" },
+            { emoji: "🐴", animal: "Horse", answers: ["145 days", "280 days", "16 months"], correct: "16 months" },
+            { emoji: "🐰", animal: "Rabbit", answers: ["30 days", "42 days", "33 days"], correct: "33 days" },
+            { emoji: "🦒", animal: "Giraffe", answers: ["16 months", "280 days", "465 days"], correct: "16 months" },
+            { emoji: "🐬", animal: "Dolphin", answers: ["280 days", "16 months", "9 months"], correct: "9 months" },
+            { emoji: "🦘", animal: "Kangaroo", answers: ["33 days", "110 days", "58-68 days"], correct: "110 days" },
+            { emoji: "🐻", animal: "Bear", answers: ["110 days", "145 days", "280 days"], correct: "110 days" },
+            { emoji: "🐿️", animal: "Squirrel", answers: ["30 days", "42 days", "33 days"], correct: "42 days" }
+        ];
+
+       
+        function shuffleArray(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function generateQuiz() {
+            const quizForm = document.getElementById("quizForm");
+            quizForm.innerHTML = "";
+            shuffleArray(questions).forEach((q, index) => {
+                const shuffledAnswers = shuffleArray([...q.answers]);
+                const questionDiv = document.createElement("div");
+                questionDiv.classList.add("question");
+                questionDiv.innerHTML = `
+                    <div class="question-content">
+                        <span class="emoji">${q.emoji}</span> 
+                        <span>${q.animal}:</span>
+                    </div>
+                    <div class="answers">
+                        ${shuffledAnswers.map(a => `
+                            <label>
+                                <input type="radio" name="q${index}" value="${a}"> ${a}
+                            </label>
+                        `).join(" ")}
+                    </div>
+                `;
+                quizForm.appendChild(questionDiv);
+            });
+        }
+
+        function checkAnswers() {
+            let score = 0;
+            const form = document.getElementById("quizForm");
+            document.querySelectorAll(".question").forEach(q => q.classList.remove("incorrect"));
+            questions.forEach((q, index) => {
+                const selected = form.querySelector(`input[name="q${index}"]:checked`);
+                if (selected && selected.value === q.correct) {
+                    score++;
+                } else {
+                    form.querySelector(`input[name="q${index}"]`).parentElement.parentElement.parentElement.classList.add("incorrect");
+                }
+            });
+            document.getElementById("result").textContent = `You got ${score} out of ${questions.length} correct!`;
+        }
+
+        window.onload = generateQuiz;
+    </script>
+</body>
+</html>
